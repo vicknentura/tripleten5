@@ -9,7 +9,7 @@ import streamlit as st
 
 games = pd.read_csv('games.csv')
 
-st.dartaframe(games.head(5))
+st.dataframe(games.head(5))
 
 ##
 games.columns = games.columns.str.lower()
