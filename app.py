@@ -8,7 +8,7 @@ from scipy.stats import linregress
 
 games = pd.read_csv('games.csv')
 
-display(games.head(5))
+st.dartaframe(games.head(5))
 
 ##
 games.columns = games.columns.str.lower()
@@ -30,7 +30,7 @@ total_games_sales = games.groupby('name')[['na_sales', 'eu_sales', 'jp_sales', '
 
 total_games_sales['ww_total'] = total_games_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
-display(total_games_sales)
+st.dataframe(total_games_sales)
 
 total_games_sales.info()
 
@@ -100,7 +100,7 @@ print(former_popular_platforms)
 # Calculate the total sales for each platform
 games['total_sales'] = games[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
-display(games.head(5))
+st.dataframe(games.head(5))
 
 
 ##
@@ -131,7 +131,7 @@ plt.show()
 ##
 games_slice = games[games['year_of_release'] >= 1995]
 
-display(games_slice)
+st.dataframe(games_slice)
 
 
 ##
@@ -145,7 +145,7 @@ games_by_year.set_index('platform', inplace=True)
 
 games_by_year['slope'] = games_by_year.apply(lambda x: linregress(range(len(x)), x)[0] if len(x) >= 2 else np.nan, axis=1)
 
-display(games_by_year)
+st.dataframe(games_by_year)
 
 
 # Fill NaN values in the 'total_sales' column with 0
@@ -247,7 +247,7 @@ grouped_df = games.groupby(['name', 'platform'])['total_sales'].sum().reset_inde
 pivot_df = grouped_df.pivot(index='name', columns='platform', values='total_sales')
 
 # Display the pivot table
-display(pivot_df)
+st.dataframe(pivot_df)
 
 
 ###
@@ -275,7 +275,7 @@ genre_sales = games.groupby('genre')['total_sales'].sum().reset_index()
 # Sort by total sales in descending order
 genre_sales = genre_sales.sort_values('total_sales', ascending=False)
 
-display(genre_sales)
+st.dataframe(genre_sales)
 
 
 ###
