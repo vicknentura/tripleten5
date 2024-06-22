@@ -1,4 +1,4 @@
-##
+#Initialization
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,15 +7,10 @@ import matplotlib.pyplot as plt
 from scipy.stats import linregress
 import streamlit as st
 
-games = pd.read_csv('games.csv')
 
-st.dataframe(games.head(5))
-
-##
+#Pre-processing Step
 games.columns = games.columns.str.lower()
 
-
-##
 games_year_clean = games.dropna(subset=['year_of_release'])
 
 games_critic_score_clean = games.dropna(subset=['critic_score'])
@@ -26,19 +21,17 @@ games_user_score_clean = games.drop(games[games['user_score'] == 'tbd'].index)
 games_rating_clean = games.dropna(subset=['rating'])
 
 
-##
+#Calculation of Total Global Sales for Each Game
 total_games_sales = games.groupby('name')[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum().reset_index()
 
 total_games_sales['ww_total'] = total_games_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
-st.dataframe(total_games_sales)
-
-total_games_sales.info()
+display(total_games_sales)
 
 
-##
+#Exploration of CumReleases
 # Create a histogram of the number of games released per year
-plt.figure(figsize=(12,6))
+plt.figure(figsize=(16,6))
 plt.hist(games_year_clean['year_of_release'], bins=range(int(games_year_clean['year_of_release'].min()), int(games_year_clean['year_of_release'].max()+1)), align='left')
 plt.xlabel('Year of Release')
 plt.ylabel('Number of Games')
@@ -52,17 +45,13 @@ for i, v in zip(games_year_clean['year_of_release'].value_counts().sort_index().
 plt.show()
 
 
-##
+#Exploration of Sales by Patform
 total_platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum().reset_index()
 
 total_platform_sales['ww_total'] = total_platform_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
-st.dataframe(total_platform_sales)
+display(total_platform_sales)
 
-total_platform_sales.info()
-
-
-##
 # Sort the data from highest to lowest
 sorted_data = sorted(zip(total_platform_sales['platform'], total_platform_sales['ww_total']), key=lambda x: x[1], reverse=True)
 
@@ -88,23 +77,17 @@ fig.set_size_inches(11, 8)
 plt.show()
 
 
-##
+
 # Find platforms that used to be popular but now have zero sales
 popular_platforms = games[(games['na_sales'] > 0) | (games['eu_sales'] > 0) | (games['jp_sales'] > 0) | (games['other_sales'] > 0)]['platform'].unique()
 zero_sales_platforms = games[(games['na_sales'] == 0) & (games['eu_sales'] == 0) & (games['jp_sales'] == 0) & (games['other_sales'] == 0)]['platform'].unique()
 former_popular_platforms = [platform for platform in popular_platforms if platform in zero_sales_platforms]
 
-st.write(former_popular_platforms)
-
-
-##
 # Calculate the total sales for each platform
 games['total_sales'] = games[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
-st.dataframe(games.head(5))
 
 
-##
 # fill NaN values with 0 (or any other value that makes sense for your data)
 games['year_of_release'].fillna(0, inplace=True)
 games['total_sales'].fillna(0, inplace=True)
@@ -129,13 +112,9 @@ plt.title('Total Sales by Year of Release and Platform')
 plt.show()
 
 
-##
+
 games_slice = games[games['year_of_release'] >= 1995]
 
-st.dataframe(games_slice)
-
-
-##
 games_slice.groupby('platform')['total_sales'].sum().nlargest(10)
 
 from scipy.stats import linregress
@@ -146,9 +125,11 @@ games_by_year.set_index('platform', inplace=True)
 
 games_by_year['slope'] = games_by_year.apply(lambda x: linregress(range(len(x)), x)[0] if len(x) >= 2 else np.nan, axis=1)
 
-st.dataframe(games_by_year)
+display(games_by_year)
 
 
+
+#Statistical
 # Fill NaN values in the 'total_sales' column with 0
 games['total_sales'].fillna(0, inplace=True)
 
@@ -173,7 +154,6 @@ plt.title('Global Sales of Video Games by Platform')
 plt.show()
 
 
-
 # Group the data by platform and calculate the total sales for each region
 platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum().reset_index()
 
@@ -196,19 +176,27 @@ plt.legend()
 plt.show()
 
 
-##
+x360_games = games[games['platform'] == 'X360']
+
+# Display the resulting dataframe
+display(x360_games)
+
 # Create a single dataframe with both critic scores and user scores
 x360_games = x360_games.replace('tbd', np.nan).dropna()
-scores = x360_games[['critic_score', 'user_score', 'total_sales']]
+scores = x360_games[['critic_score', 'user_score', 'total_sales']].copy()
+
+# Remove NaN and Inf values from the scores dataframe
+scores = scores.replace([np.inf, -np.inf], np.nan).dropna()
 
 # Divide user_score by e+10 and multiply by 10
-scores['user_score'] = scores['user_score'] / 1e+10 * 10
+scores['user_score'] = scores['user_score'].astype(float)
+scores['user_score'] = scores['user_score'] *10
 
 plt.figure(figsize=(12, 6))
 
 # Create a scatter plot of both critic scores and user scores vs. sales
 sns.scatterplot(x='critic_score', y='total_sales', data=scores, color='#406d9c', label='Critic Reviews', alpha=0.5)
-sns.scatterplot(x='user_score', y='total_sales', data=scores.assign(user_score=scores['user_score'].astype(float)), color='#cf850c', label='User Reviews', alpha=0.5)
+sns.scatterplot(x='user_score', y='total_sales', data=scores, color='#cf850c', label='User Reviews', alpha=0.5)
 
 # Add a legend
 plt.legend()
@@ -219,8 +207,8 @@ plt.ylabel('Sales (millions)')
 plt.title('X360 Sales vs. Reviews')
 
 # Set the x-axis limits to the minimum and maximum values in the data
-plt.xlim(min(scores['critic_score'].min(), scores['user_score'].astype(float).min()),
-         max(scores['critic_score'].max(), scores['user_score'].astype(float).max()))
+plt.xlim(np.nanmin([scores['critic_score'].min(), scores['user_score'].min()]),
+         np.nanmax([scores['critic_score'].max(), scores['user_score'].max()]))
 
 # Calculate the slope and r-squared for critic scores
 critic_regression = linregress(scores['critic_score'], scores['total_sales'])
@@ -240,7 +228,37 @@ plt.plot(scores['user_score'], user_slope * scores['user_score'] + user_regressi
 plt.show()
 
 
-###
+st.write('The r-squared value for User Reviews to Sales is : ', round(user_r_squared,2))
+st.write('The r-squared value for Critic Reviews to Sales is : ', round(critic_r_squared,2))
+
+
+
+# Select the columns of interest
+cols = ['na_sales', 'eu_sales', 'jp_sales', 'other_sales', 'total_sales', 'user_score', 'critic_score']
+
+# Create a new DataFrame with the selected columns
+df = games[cols].copy()
+
+# Drop rows with NaN values
+df = df.dropna()
+
+# Replace 'tbd' with 0
+df = df.replace('tbd', 0)
+
+# Convert the columns to float
+df = df.astype(float)
+
+# Create a correlation matrix
+corr_matrix = df.corr()
+
+# Create a heatmap using seaborn
+plt.figure(figsize=(10, 8))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', square=True)
+plt.title('Correlation Matrix')
+plt.show()
+
+
+
 # Group the data by game name and platform, and sum the total sales
 grouped_df = games.groupby(['name', 'platform'])['total_sales'].sum().reset_index()
 
@@ -248,10 +266,10 @@ grouped_df = games.groupby(['name', 'platform'])['total_sales'].sum().reset_inde
 pivot_df = grouped_df.pivot(index='name', columns='platform', values='total_sales')
 
 # Display the pivot table
-st.dataframe(pivot_df)
+display(pivot_df)
 
 
-###
+
 genre_counts = games['genre'].value_counts()
 
 # Create a bar chart
@@ -269,17 +287,17 @@ for i, v in enumerate(genre_counts):
 plt.show()
 
 
-###
+
 # Group by genre and calculate sum of total sales
 genre_sales = games.groupby('genre')['total_sales'].sum().reset_index()
 
 # Sort by total sales in descending order
 genre_sales = genre_sales.sort_values('total_sales', ascending=False)
 
-st.dataframe(genre_sales)
+display(genre_sales)
 
 
-###
+
 # Pivot the data to get total sales by genre and year
 genre_year_sales = games.pivot_table(index=['genre', 'year_of_release'], values='total_sales', aggfunc='sum').reset_index()
 
@@ -303,5 +321,135 @@ plt.legend(title='Genre')
 plt.show()
 
 
-###
 
+
+# assume 'games' is a Pandas DataFrame with columns 'na_sales', 'eu_sales', 'jp_sales', 'other_sales'
+
+# create separate DataFrames for each region
+north_america_games = games[games['na_sales'] > 0].copy()
+europe_games = games[games['eu_sales'] > 0].copy()
+jp_games = games[games['jp_sales'] > 0].copy()
+other_games = games[games['other_sales'] > 0].copy()
+
+# drop rows with NaN, 'tbd', or 0 sales in each region
+north_america_games = north_america_games.replace('tbd', np.nan).dropna()
+europe_games = europe_games.replace('tbd', np.nan).dropna()
+jp_games = jp_games.replace('tbd', np.nan).dropna()
+other_games = other_games.replace('tbd', np.nan).dropna()
+
+
+# assume north_america_games, europe_games, jp_games, other_games are DataFrames
+
+regions = {
+    'north_america': {'df': north_america_games, 'sales_col': 'na_sales'},
+    'europe': {'df': europe_games, 'sales_col': 'eu_sales'},
+    'jp': {'df': jp_games, 'sales_col': 'jp_sales'},
+    'other': {'df': other_games, 'sales_col': 'other_sales'}
+}
+
+
+# create a Streamlit dashboard
+st.title("Games Sales Dashboard")
+
+# add a region selector
+region_selector = st.selectbox("Select a region:", list(regions.keys()))
+
+# get the selected region's DataFrame and sales column
+region_df = regions[region_selector]['df']
+sales_col = regions[region_selector]['sales_col']
+
+# add a sales column selector
+sales_cols = ['na_sales', 'eu_sales', 'jp_sales', 'other_sales']
+sales_col_selector = st.selectbox("Select a sales column:", sales_cols)
+
+# create a function to calculate top platforms by sales
+def top_platforms_by_sales(df, sales_col):
+    return df.groupby('platform')[sales_col].sum().sort_values(ascending=False).head(5)
+
+# display the top platforms by sales
+st.write(f"Top 5 platforms by games sales in {region_selector}:")
+st.dataframe(top_platforms_by_sales(region_df, sales_col))
+
+# create a function to calculate top platforms by number of games
+def top_platforms_by_games(df):
+    return df['platform'].value_counts().head(5)
+
+# display the top platforms by number of games
+st.write(f"Top 5 platforms by number of games in {region_selector}:")
+st.dataframe(top_platforms_by_games(region_df))
+
+# create a function to calculate top genres by region
+def top_genres_by_region(df):
+    return df['genre'].value_counts().head(5)
+
+# display the top genres by region
+st.write(f"Top 5 genres in {region_selector}:")
+st.dataframe(top_genres_by_region(region_df))
+
+# Create a function to analyze ESRB ratings and sales
+def analyze_esrb_ratings(df, sales_col):
+    # Calculate cumulative sales for each rating
+    esrb_ratings = df.groupby('rating')[sales_col].sum().reset_index()
+        
+    # Create a bar chart to visualize the results
+    fig, ax = plt.subplots()
+    ax.bar(esrb_ratings['rating'], esrb_ratings[sales_col])
+    ax.set_xlabel('ESRB Rating')
+    ax.set_ylabel('Cumulative Sales')
+    ax.set_title('ESRB Ratings vs. Cumulative Sales')
+        
+    return fig
+
+# Add a new section to the dashboard
+st.write(f"ESRB Ratings vs. Cumulative Sales in {region_selector}:")
+esrb_fig = analyze_esrb_ratings(region_df, sales_col)
+st.pyplot(esrb_fig)
+
+
+
+st.title("Hypothesis Testing Examples")
+
+# Load your data
+# Example data: Replace with your actual data
+data = pd.DataFrame({
+    "Platform": ["Xbox One", "Xbox One", "PC", "PC", "Xbox One", "PC"],
+    "Rating": [4.5, 4.0, 3.5, 4.0, 3.0, 4.5],
+    "Genre": ["Action", "Sports", "Action", "Sports", "Action", "Sports"]
+})
+
+# Remove duplicates
+data.drop_duplicates(inplace=True)
+
+# 1. Hypothesis Test: Average user ratings for Xbox One and PC platforms
+st.header("Hypothesis Test 1: Xbox One vs PC")
+st.write("**Null Hypothesis:** Average user ratings for Xbox One and PC platforms are the same.")
+st.write("**Alternative Hypothesis:** Average user ratings for Xbox One and PC platforms are different.")
+
+xbox_ratings = data[data["Platform"] == "Xbox One"]["Rating"]
+pc_ratings = data[data["Platform"] == "PC"]["Rating"]
+
+t_statistic, p_value = stats.ttest_ind(xbox_ratings, pc_ratings)
+st.write(f"**T-statistic:** {t_statistic:.2f}")
+st.write(f"**P-value:** {p_value:.3f}")
+
+if p_value < 0.05:
+    st.write("**Conclusion:** Reject the null hypothesis. There is statistically significant evidence to suggest that average user ratings for Xbox One and PC platforms are different.")
+else:
+    st.write("**Conclusion:** Fail to reject the null hypothesis. There is not enough evidence to suggest that average user ratings for Xbox One and PC platforms are different.")
+
+# 2. Hypothesis Test: Average user ratings for Action and Sports genres
+st.header("Hypothesis Test 2: Action vs Sports")
+st.write("**Null Hypothesis:** Average user ratings for Action and Sports genres are the same.")
+st.write("**Alternative Hypothesis:** Average user ratings for Action and Sports genres are different.")
+
+action_ratings = data[data["Genre"] == "Action"]["Rating"]
+sports_ratings = data[data["Genre"] == "Sports"]["Rating"]
+
+t_statistic, p_value = stats.ttest_ind(action_ratings, sports_ratings)
+st.write(f"**T-statistic:** {t_statistic:.2f}")
+st.write(f"**P-value:** {p_value:.3f}")
+
+if p_value < 0.05:
+    st.write("**Conclusion:** Reject the null hypothesis. There is statistically significant evidence to suggest that average user ratings for Action and Sports genres are different.")
+else:
+    st.write("**Conclusion:** Fail to reject the null hypothesis. There is not enough evidence to suggest that average user ratings for Action and Sports genres are different.")
