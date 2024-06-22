@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import linregress
 import streamlit as st
 
+games = pd.read_csv('games.csv')
 
 #Pre-processing Step
 games.columns = games.columns.str.lower()
