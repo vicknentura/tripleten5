@@ -409,24 +409,16 @@ st.pyplot(esrb_fig)
 
 st.title("Hypothesis Testing Examples")
 
-# Load your data
-# Example data: Replace with your actual data
-data = pd.DataFrame({
-    "Platform": ["Xbox One", "Xbox One", "PC", "PC", "Xbox One", "PC"],
-    "Rating": [4.5, 4.0, 3.5, 4.0, 3.0, 4.5],
-    "Genre": ["Action", "Sports", "Action", "Sports", "Action", "Sports"]
-})
-
 # Remove duplicates
-data.drop_duplicates(inplace=True)
+games.drop_duplicates(inplace=True)
 
 # 1. Hypothesis Test: Average user ratings for Xbox One and PC platforms
 st.header("Hypothesis Test 1: Xbox One vs PC")
 st.write("**Null Hypothesis:** Average user ratings for Xbox One and PC platforms are the same.")
 st.write("**Alternative Hypothesis:** Average user ratings for Xbox One and PC platforms are different.")
 
-xbox_ratings = data[data["Platform"] == "Xbox One"]["Rating"]
-pc_ratings = data[data["Platform"] == "PC"]["Rating"]
+xbox_ratings = games[games["platform"] == "XOne"]["user_score"]
+pc_ratings = games[games["platform"] == "PC"]["user_score"]
 
 t_statistic, p_value = stats.ttest_ind(xbox_ratings, pc_ratings)
 st.write(f"**T-statistic:** {t_statistic:.2f}")
@@ -442,8 +434,8 @@ st.header("Hypothesis Test 2: Action vs Sports")
 st.write("**Null Hypothesis:** Average user ratings for Action and Sports genres are the same.")
 st.write("**Alternative Hypothesis:** Average user ratings for Action and Sports genres are different.")
 
-action_ratings = data[data["Genre"] == "Action"]["Rating"]
-sports_ratings = data[data["Genre"] == "Sports"]["Rating"]
+action_ratings = games[games["genre"] == "Action"]["user_score"]
+sports_ratings = games[games["genre"] == "Sports"]["user_score"]
 
 t_statistic, p_value = stats.ttest_ind(action_ratings, sports_ratings)
 st.write(f"**T-statistic:** {t_statistic:.2f}")
