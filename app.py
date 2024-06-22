@@ -57,7 +57,7 @@ total_platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sa
 
 total_platform_sales['ww_total'] = total_platform_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
-display(total_platform_sales)
+st.dataframe(total_platform_sales)
 
 total_platform_sales.info()
 
@@ -94,7 +94,7 @@ popular_platforms = games[(games['na_sales'] > 0) | (games['eu_sales'] > 0) | (g
 zero_sales_platforms = games[(games['na_sales'] == 0) & (games['eu_sales'] == 0) & (games['jp_sales'] == 0) & (games['other_sales'] == 0)]['platform'].unique()
 former_popular_platforms = [platform for platform in popular_platforms if platform in zero_sales_platforms]
 
-print(former_popular_platforms)
+st.write(former_popular_platforms)
 
 
 ##
