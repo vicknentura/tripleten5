@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.pyplot as plt
+import scipy.stats as stats
 from scipy.stats import linregress
 import streamlit as st
 
