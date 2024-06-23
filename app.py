@@ -64,7 +64,7 @@ if total_platform_sales_search_input:
 else:
     df_filtered = total_platform_sales
 
-st.dataframe(total_platform_sales)
+st.dataframe(df_filtered)
 
 
 
