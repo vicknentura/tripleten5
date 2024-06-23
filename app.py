@@ -60,7 +60,7 @@ total_platform_sales_search_input = st.text_input("Search:")
 
 # filter the dataframe based on the search input
 if total_platform_sales_search_input:
-    df_filtered = total_platform_sales[total_platform_sales.isin([total_platform_sales_search_input]).any(axis=1)]
+    df_filtered = total_platform_sales[total_platform_sales['platform'].str.contains(total_platform_sales_search_input, case=False)]
 else:
     df_filtered = total_platform_sales
 
