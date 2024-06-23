@@ -14,6 +14,9 @@ games = pd.read_csv('games.csv')
 #Pre-processing Step
 games.columns = games.columns.str.lower()
 
+games = games[games['name'].notna()]
+games = games[~games['name'].str.contains('.hack//')]
+
 games_year_clean = games.dropna(subset=['year_of_release'])
 
 games_critic_score_clean = games.dropna(subset=['critic_score'])
