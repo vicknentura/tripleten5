@@ -50,13 +50,23 @@ for i, v in zip(games_year_clean['year_of_release'].value_counts().sort_index().
 
 plt.show()
 
-
-#Exploration of Sales by Patform
+#Total Platform Sales
 total_platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum().reset_index()
 
 total_platform_sales['ww_total'] = total_platform_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
-st.write(total_platform_sales)
+# create a search bar
+total_platform_sales_search_input = st.text_input("Search:")
+
+# filter the dataframe based on the search input
+if total_platform_sales_search_input:
+    df_filtered = total_platform_sales[total_platform_sales.isin([search_input]).any(axis=1)]
+else:
+    df_filtered = total_platform_sales
+
+st.dataframe(total_platform_sales)
+
+
 
 # Sort the data from highest to lowest
 sorted_data = sorted(zip(total_platform_sales['platform'], total_platform_sales['ww_total']), key=lambda x: x[1], reverse=True)
