@@ -477,7 +477,7 @@ total_games_sales = games.groupby('name')[['na_sales', 'eu_sales', 'jp_sales', '
 
 total_games_sales['ww_total'] = total_games_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
-display(total_games_sales)
+st.write(total_games_sales)
 
 
 #Exploration of CumReleases
@@ -501,7 +501,7 @@ total_platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sa
 
 total_platform_sales['ww_total'] = total_platform_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
-display(total_platform_sales)
+st.write(total_platform_sales)
 
 # Sort the data from highest to lowest
 sorted_data = sorted(zip(total_platform_sales['platform'], total_platform_sales['ww_total']), key=lambda x: x[1], reverse=True)
@@ -576,7 +576,7 @@ games_by_year.set_index('platform', inplace=True)
 
 games_by_year['slope'] = games_by_year.apply(lambda x: linregress(range(len(x)), x)[0] if len(x) >= 2 else np.nan, axis=1)
 
-display(games_by_year)
+st.write(games_by_year)
 
 
 
@@ -630,7 +630,7 @@ plt.show()
 x360_games = games[games['platform'] == 'X360']
 
 # Display the resulting dataframe
-display(x360_games)
+st.write(x360_games)
 
 # Create a single dataframe with both critic scores and user scores
 x360_games = x360_games.replace('tbd', np.nan).dropna()
@@ -717,7 +717,7 @@ grouped_df = games.groupby(['name', 'platform'])['total_sales'].sum().reset_inde
 pivot_df = grouped_df.pivot(index='name', columns='platform', values='total_sales')
 
 # Display the pivot table
-display(pivot_df)
+st.write(pivot_df)
 
 
 
@@ -745,7 +745,7 @@ genre_sales = games.groupby('genre')['total_sales'].sum().reset_index()
 # Sort by total sales in descending order
 genre_sales = genre_sales.sort_values('total_sales', ascending=False)
 
-display(genre_sales)
+st.write(genre_sales)
 
 
 
