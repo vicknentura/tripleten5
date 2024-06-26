@@ -42,7 +42,7 @@ total_games_sales['ww_total'] = total_games_sales[['na_sales', 'eu_sales', 'jp_s
 st.subheader('Cumulative Game Sales')
 st.caption('Scroll through the table to view cumulative sales since the game was released')
 # create a search bar
-total_games_sales_search_input = st.text_input("Search:", key=1)
+total_games_sales_search_input = st.text_input("Search:", key="total_games_sales_search_input")
 
 # filter the dataframe based on the search input
 if total_games_sales_search_input:
@@ -74,7 +74,7 @@ plt.gca().xaxis.set_major_locator(plt.MaxNLocator(10))  # Show 10 x-values
 for i, v in zip(games_year_clean['year_of_release'].value_counts().sort_index().index, games_year_clean['year_of_release'].value_counts().sort_index().values):
     plt.text(i, v, str(v), ha='center')
 
-st.pyplot()
+st.pyplot(fig.get_figure())
 
 
 st.divider()
@@ -88,7 +88,7 @@ total_platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sa
 total_platform_sales['ww_total'] = total_platform_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
 # create a search bar
-total_platform_sales_search_input = st.text_input("Search:", key=2)
+total_platform_sales_search_input = st.text_input("Search:", key="total_platform_sales_search_input")
 
 # filter the dataframe based on the search input
 if total_platform_sales_search_input:
@@ -124,7 +124,7 @@ ax.set_yticklabels([x[0] for x in sorted_data])
 fig.set_size_inches(11, 8)
 
 # Display the plot
-st.pyplot()
+st.pyplot(fig.get_figure())
 
 
 st.divider()
@@ -161,7 +161,7 @@ for platform in games['platform'].unique():
 plt.xlabel('Year of Release')
 plt.ylabel('Total Sales')
 plt.title('Total Sales by Year of Release and Platform')
-st.pyplot()
+st.pyplot(fig.get_figure())
 
 
 st.divider()
@@ -207,7 +207,7 @@ plt.boxplot(data_to_plot, labels=labels)
 plt.xlabel('')
 plt.ylabel('Global Sales (millions)')
 plt.title('Global Sales of Video Games by Platform')
-st.pyplot()
+st.pyplot(fig.get_figure())
 
 
 st.divider()
@@ -233,7 +233,7 @@ plt.xlabel('Platform')
 plt.ylabel('Sales (millions)')
 plt.title('Sales of Video Games by Platform and Region')
 plt.legend()
-st.pyplot()
+st.pyplot(fig.get_figure())
 
 
 st.divider()
@@ -288,7 +288,7 @@ plt.plot(scores['critic_score'], critic_slope * scores['critic_score'] + critic_
 plt.plot(scores['user_score'], user_slope * scores['user_score'] + user_regression.intercept, color='#cf850c', linestyle='--', label=f'User Reviews Slope: {user_slope:.2f}, R²: {user_r_squared:.2f}')
 
 # Show the plot
-st.pyplot()
+st.pyplot(fig.get_figure())
 
 
 st.write('The r-squared value for User Reviews to Sales is : ', round(user_r_squared,2))
@@ -321,7 +321,7 @@ corr_matrix = df.corr()
 plt.figure(figsize=(10, 8))
 sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', square=True)
 plt.title('Correlation Matrix')
-st.pyplot()
+st.pyplot(fig.get_figure())
 
 
 st.divider()
@@ -355,7 +355,7 @@ plt.xticks(rotation=0)
 for i, v in enumerate(genre_counts):
     plt.text(i, v + 0.5, str(v), ha='center')
 
-st.pyplot()
+st.pyplot(fig.get_figure())
 
 
 st.divider()
@@ -395,7 +395,7 @@ plt.xlabel('Year')
 plt.ylabel('Total Sales')
 plt.legend(title='Genre')
 
-st.pyplot()
+st.pyplot(fig.get_figure())
 
 
 st.divider()
@@ -483,7 +483,7 @@ def analyze_esrb_ratings(df, sales_col):
 # Add a new section to the dashboard
 st.write(f"ESRB Ratings vs. Cumulative Sales in {region_selector}:")
 esrb_fig = analyze_esrb_ratings(region_df, sales_col)
-st.pyplot(esrb_fig)
+st.pyplot(fig.get_figure())
 
 
 st.divider()
