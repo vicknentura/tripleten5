@@ -8,6 +8,8 @@ import scipy.stats as stats
 from scipy.stats import linregress
 import streamlit as st
 
+st.set_option('deprecation.showPyplotGlobalUse', False)
+
 games = pd.read_csv('games.csv')
 
 
@@ -44,11 +46,11 @@ total_games_sales_search_input = st.text_input("Search:", key=1)
 
 # filter the dataframe based on the search input
 if total_games_sales_search_input:
-    df_games_filtered = total_games_sales[total_games_sales['platform'].str.contains(total_games_sales_search_input, case=False)]
+    df_filtered = total_games_sales[total_games_sales['platform'].str.contains(total_games_sales_search_input, case=False)]
 else:
-    df_games_filtered = total_games_sales
+    df_filtered = total_games_sales
 
-st.dataframe(df_games_filtered)
+st.dataframe(df_filtered)
 
 st.divider()
 st.subheader('Number of Games Released Historically')
@@ -86,15 +88,15 @@ total_platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sa
 total_platform_sales['ww_total'] = total_platform_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
 # create a search bar
-total_platform_sales_search_input = st.text_input("Search:", key=2)
+total_platform_sales_search_input = st.text_input("Search:", key=1)
 
 # filter the dataframe based on the search input
 if total_platform_sales_search_input:
-    df_platform_filtered = total_platforms_sales[total_platform_sales['platform'].str.contains(total_platform_sales_search_input, case=False)]
+    df_filtered = total_platform_sales[total_platform_sales['platform'].str.contains(total_platform_sales_search_input, case=False)]
 else:
-    df_platforms_filtered = total_platform_sales
+    df_filtered = total_platform_sales
 
-st.dataframe(df_platforms_filtered)  # display the filtered dataframe
+st.dataframe(df_filtered)  # display the filtered dataframe
 
 
 st.divider()
