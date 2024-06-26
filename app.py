@@ -38,7 +38,7 @@ total_games_sales = games.groupby('name')[['na_sales', 'eu_sales', 'jp_sales', '
 total_games_sales['ww_total'] = total_games_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
 st.subheader('Cumulative Game Sales')
-st.caption('Scroll through the table to view cumulative sales since the game was released)
+st.caption('Scroll through the table to view cumulative sales since the game was released')
 st.write(total_games_sales)
 
 st.divider()
