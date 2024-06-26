@@ -39,18 +39,33 @@ total_games_sales['ww_total'] = total_games_sales[['na_sales', 'eu_sales', 'jp_s
 
 st.subheader('Cumulative Game Sales')
 st.caption('Scroll through the table to view cumulative sales since the game was released')
-st.write(total_games_sales)
+# create a search bar
+total_games_sales_search_input = st.text_input("Search:")
+
+# filter the dataframe based on the search input
+if total_games_sales_search_input:
+    df_games_filtered = total_games_sales[total_games_sales['platform'].str.contains(total_games_sales_search_input, case=False)]
+else:
+    df_filtered = total_games_sales
+
+st.dataframe(total_games_sales)
 
 st.divider()
 
 #Exploration of CumReleases
 # Create a histogram of the number of games released per year
-plt.figure(figsize=(16,6))
+plt.figure(figsize=(16,8))
 plt.hist(games_year_clean['year_of_release'], bins=range(int(games_year_clean['year_of_release'].min()), int(games_year_clean['year_of_release'].max()+1)), align='left')
 plt.xlabel('Year of Release')
 plt.ylabel('Number of Games')
 plt.title('Number of Games Released per Year')
 plt.xticks(rotation=45)
+
+# Set the y-axis limit to 2000
+plt.ylim(0, 2000)
+
+# Add more space between the x-values
+plt.gca().xaxis.set_major_locator(plt.MaxNLocator(10))  # Show 10 x-values
 
 # Add data labels
 for i, v in zip(games_year_clean['year_of_release'].value_counts().sort_index().index, games_year_clean['year_of_release'].value_counts().sort_index().values):
