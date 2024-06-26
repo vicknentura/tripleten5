@@ -27,7 +27,8 @@ games_user_score_clean = games.drop(games[games['user_score'] == 'tbd'].index)
 games_rating_clean = games.dropna(subset=['rating'])
 
 
-st.header('Video Game Sales Dashboard', divider='gray')
+st.header('Video Game Sales Dashboard')  # Use st.header() to display the header
+st.divider()  # Add a divider using st.divider()
 st.subheader(':violet[Global Sales from 1980 to 2016]')
 st.divider()
 
