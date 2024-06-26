@@ -15,7 +15,7 @@ games = pd.read_csv('games.csv')
 games.columns = games.columns.str.lower()
 
 games = games[games['name'].notna()]
-games = games[~games['name'].str.contains('.hack//')]
+games = games[~games['name'].str.contains('.hack')]
 
 games_year_clean = games.dropna(subset=['year_of_release'])
 
@@ -37,6 +37,8 @@ total_games_sales = games.groupby('name')[['na_sales', 'eu_sales', 'jp_sales', '
 
 total_games_sales['ww_total'] = total_games_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
+st.subheader('Cumulative Game Sales')
+st.caption('Scroll through the table to view cumulative sales since the game was released)
 st.write(total_games_sales)
 
 st.divider()
@@ -54,7 +56,7 @@ plt.xticks(rotation=45)
 for i, v in zip(games_year_clean['year_of_release'].value_counts().sort_index().index, games_year_clean['year_of_release'].value_counts().sort_index().values):
     plt.text(i, v, str(v), ha='center')
 
-plt.show()
+st.pyplot()
 
 
 st.divider()
