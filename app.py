@@ -40,21 +40,22 @@ total_games_sales['ww_total'] = total_games_sales[['na_sales', 'eu_sales', 'jp_s
 st.subheader('Cumulative Game Sales')
 st.caption('Scroll through the table to view cumulative sales since the game was released')
 # create a search bar
-total_games_sales_search_input = st.text_input("Search:")
+total_games_sales_search_input = st.text_input("Search:", key=1)
 
 # filter the dataframe based on the search input
 if total_games_sales_search_input:
     df_games_filtered = total_games_sales[total_games_sales['platform'].str.contains(total_games_sales_search_input, case=False)]
 else:
-    df_filtered = total_games_sales
+    df_games_filtered = total_games_sales
 
-st.dataframe(total_games_sales)
+st.dataframe(df_games_filtered)
 
 st.divider()
+st.subheader('Number of Games Released Historically')
 
 #Exploration of CumReleases
 # Create a histogram of the number of games released per year
-plt.figure(figsize=(16,8))
+plt.figure(figsize=(18,8))
 plt.hist(games_year_clean['year_of_release'], bins=range(int(games_year_clean['year_of_release'].min()), int(games_year_clean['year_of_release'].max()+1)), align='left')
 plt.xlabel('Year of Release')
 plt.ylabel('Number of Games')
@@ -76,6 +77,8 @@ st.pyplot()
 
 st.divider()
 
+st.subheader('Cumulative Platform Sales')
+st.caption('Scroll through the table to view cumulative sales since the platform was released')
 
 #Total Platform Sales
 total_platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum().reset_index()
@@ -83,15 +86,15 @@ total_platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sa
 total_platform_sales['ww_total'] = total_platform_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
 # create a search bar
-total_platform_sales_search_input = st.text_input("Search:")
+total_platform_sales_search_input = st.text_input("Search:", key=2)
 
 # filter the dataframe based on the search input
 if total_platform_sales_search_input:
-    df_filtered = total_platform_sales[total_platform_sales['platform'].str.contains(total_platform_sales_search_input, case=False)]
+    df_platform_filtered = total_platforms_sales[total_platform_sales['platform'].str.contains(total_platform_sales_search_input, case=False)]
 else:
-    df_filtered = total_platform_sales
+    df_platforms_filtered = total_platform_sales
 
-st.dataframe(total_platform_sales)
+st.dataframe(df_platforms_filtered)  # display the filtered dataframe
 
 
 st.divider()
