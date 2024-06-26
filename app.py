@@ -27,6 +27,10 @@ games_user_score_clean = games.drop(games[games['user_score'] == 'tbd'].index)
 games_rating_clean = games.dropna(subset=['rating'])
 
 
+st.header('Video Game Sales Dashboard', divider='gray')
+st.subheader(':violet[Global Sales from 1980 to 2016]')
+st.divider()
+
 #Calculation of Total Global Sales for Each Game
 total_games_sales = games.groupby('name')[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum().reset_index()
 
@@ -34,6 +38,7 @@ total_games_sales['ww_total'] = total_games_sales[['na_sales', 'eu_sales', 'jp_s
 
 st.write(total_games_sales)
 
+st.divider()
 
 #Exploration of CumReleases
 # Create a histogram of the number of games released per year
@@ -50,6 +55,10 @@ for i, v in zip(games_year_clean['year_of_release'].value_counts().sort_index().
 
 plt.show()
 
+
+st.divider()
+
+
 #Total Platform Sales
 total_platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum().reset_index()
 
@@ -64,8 +73,10 @@ if total_platform_sales_search_input:
 else:
     df_filtered = total_platform_sales
 
-st.dataframe(df_filtered)
+st.dataframe(total_platform_sales)
 
+
+st.divider()
 
 
 # Sort the data from highest to lowest
@@ -92,6 +103,8 @@ fig.set_size_inches(11, 8)
 # Display the plot
 plt.show()
 
+
+st.divider()
 
 
 # Find platforms that used to be popular but now have zero sales
@@ -128,6 +141,8 @@ plt.title('Total Sales by Year of Release and Platform')
 plt.show()
 
 
+st.divider()
+
 
 games_slice = games[games['year_of_release'] >= 1995]
 
@@ -143,6 +158,8 @@ games_by_year['slope'] = games_by_year.apply(lambda x: linregress(range(len(x)),
 
 st.write(games_by_year)
 
+
+st.divider()
 
 
 #Statistical
@@ -170,6 +187,10 @@ plt.title('Global Sales of Video Games by Platform')
 plt.show()
 
 
+st.divider()
+
+
+
 # Group the data by platform and calculate the total sales for each region
 platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum().reset_index()
 
@@ -190,6 +211,9 @@ plt.ylabel('Sales (millions)')
 plt.title('Sales of Video Games by Platform and Region')
 plt.legend()
 plt.show()
+
+
+st.divider()
 
 
 x360_games = games[games['platform'] == 'X360']
@@ -248,6 +272,9 @@ st.write('The r-squared value for User Reviews to Sales is : ', round(user_r_squ
 st.write('The r-squared value for Critic Reviews to Sales is : ', round(critic_r_squared,2))
 
 
+st.divider()
+
+
 
 # Select the columns of interest
 cols = ['na_sales', 'eu_sales', 'jp_sales', 'other_sales', 'total_sales', 'user_score', 'critic_score']
@@ -274,6 +301,8 @@ plt.title('Correlation Matrix')
 plt.show()
 
 
+st.divider()
+
 
 # Group the data by game name and platform, and sum the total sales
 grouped_df = games.groupby(['name', 'platform'])['total_sales'].sum().reset_index()
@@ -283,6 +312,9 @@ pivot_df = grouped_df.pivot(index='name', columns='platform', values='total_sale
 
 # Display the pivot table
 st.write(pivot_df)
+
+
+st.divider()
 
 
 
@@ -303,6 +335,9 @@ for i, v in enumerate(genre_counts):
 plt.show()
 
 
+st.divider()
+
+
 
 # Group by genre and calculate sum of total sales
 genre_sales = games.groupby('genre')['total_sales'].sum().reset_index()
@@ -311,6 +346,9 @@ genre_sales = games.groupby('genre')['total_sales'].sum().reset_index()
 genre_sales = genre_sales.sort_values('total_sales', ascending=False)
 
 st.write(genre_sales)
+
+
+st.divider()
 
 
 
@@ -335,6 +373,9 @@ plt.ylabel('Total Sales')
 plt.legend(title='Genre')
 
 plt.show()
+
+
+st.divider()
 
 
 
@@ -422,6 +463,9 @@ esrb_fig = analyze_esrb_ratings(region_df, sales_col)
 st.pyplot(esrb_fig)
 
 
+st.divider()
+
+
 
 
 st.title("Hypothesis Testing Examples")
@@ -442,6 +486,11 @@ if p_value < 0.05:
     st.write("**Conclusion:** Reject the null hypothesis. There is statistically significant evidence to suggest that average user ratings for Xbox One and PC platforms are different.")
 else:
     st.write("**Conclusion:** Fail to reject the null hypothesis. There is not enough evidence to suggest that average user ratings for Xbox One and PC platforms are different.")
+
+
+st.divider()
+
+
 
 # 2. Hypothesis Test: Average user ratings for Action and Sports genres
 st.header("Hypothesis Test 2: Action vs Sports")
