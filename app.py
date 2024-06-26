@@ -46,7 +46,7 @@ total_games_sales_search_input = st.text_input("Search:", key=1)
 
 # filter the dataframe based on the search input
 if total_games_sales_search_input:
-    df_filtered = total_games_sales[total_games_sales['platform'].str.contains(total_games_sales_search_input, case=False)]
+    df_filtered = total_games_sales[total_games_sales['name'].str.contains(total_games_sales_search_input, case=False)]
 else:
     df_filtered = total_games_sales
 
@@ -88,7 +88,7 @@ total_platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sa
 total_platform_sales['ww_total'] = total_platform_sales[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
 # create a search bar
-total_platform_sales_search_input = st.text_input("Search:", key=1)
+total_platform_sales_search_input = st.text_input("Search:", key=2)
 
 # filter the dataframe based on the search input
 if total_platform_sales_search_input:
@@ -124,7 +124,7 @@ ax.set_yticklabels([x[0] for x in sorted_data])
 fig.set_size_inches(11, 8)
 
 # Display the plot
-plt.show()
+st.pyplot()
 
 
 st.divider()
@@ -161,7 +161,7 @@ for platform in games['platform'].unique():
 plt.xlabel('Year of Release')
 plt.ylabel('Total Sales')
 plt.title('Total Sales by Year of Release and Platform')
-plt.show()
+st.pyplot()
 
 
 st.divider()
@@ -207,7 +207,7 @@ plt.boxplot(data_to_plot, labels=labels)
 plt.xlabel('')
 plt.ylabel('Global Sales (millions)')
 plt.title('Global Sales of Video Games by Platform')
-plt.show()
+st.pyplot()
 
 
 st.divider()
@@ -233,7 +233,7 @@ plt.xlabel('Platform')
 plt.ylabel('Sales (millions)')
 plt.title('Sales of Video Games by Platform and Region')
 plt.legend()
-plt.show()
+st.pyplot()
 
 
 st.divider()
@@ -288,7 +288,7 @@ plt.plot(scores['critic_score'], critic_slope * scores['critic_score'] + critic_
 plt.plot(scores['user_score'], user_slope * scores['user_score'] + user_regression.intercept, color='#cf850c', linestyle='--', label=f'User Reviews Slope: {user_slope:.2f}, R²: {user_r_squared:.2f}')
 
 # Show the plot
-plt.show()
+st.pyplot()
 
 
 st.write('The r-squared value for User Reviews to Sales is : ', round(user_r_squared,2))
@@ -321,7 +321,7 @@ corr_matrix = df.corr()
 plt.figure(figsize=(10, 8))
 sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', square=True)
 plt.title('Correlation Matrix')
-plt.show()
+st.pyplot()
 
 
 st.divider()
@@ -355,7 +355,7 @@ plt.xticks(rotation=0)
 for i, v in enumerate(genre_counts):
     plt.text(i, v + 0.5, str(v), ha='center')
 
-plt.show()
+st.pyplot()
 
 
 st.divider()
@@ -395,7 +395,7 @@ plt.xlabel('Year')
 plt.ylabel('Total Sales')
 plt.legend(title='Genre')
 
-plt.show()
+st.pyplot()
 
 
 st.divider()
