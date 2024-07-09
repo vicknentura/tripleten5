@@ -1,0 +1,283 @@
+#Time Series plot with error bands
+sns.set_theme(style="darkgrid")
+
+# Load an example dataset with long-form data
+fmri = sns.load_dataset("fmri")
+
+# Plot the responses for different events and regions
+sns.lineplot(x="timepoint", y="signal",
+             hue="region", style="event",
+             data=fmri)
+
+
+
+
+#Scatterplot with multiple semantics
+sns.set_theme(style="whitegrid")
+
+# Load the example diamonds dataset
+diamonds = sns.load_dataset("diamonds")
+
+# Draw a scatter plot while assigning point colors and sizes to different
+# variables in the dataset
+f, ax = plt.subplots(figsize=(6.5, 6.5))
+sns.despine(f, left=True, bottom=True)
+clarity_ranking = ["I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF"]
+sns.scatterplot(x="carat", y="price",
+                hue="clarity", size="depth",
+                palette="ch:r=-.2,d=.3_r",
+                hue_order=clarity_ranking,
+                sizes=(1, 8), linewidth=0,
+                data=diamonds, ax=ax)
+
+
+
+
+#Anscombe's quartet
+sns.set_theme(style="ticks")
+
+# Load the example dataset for Anscombe's quartet
+df = sns.load_dataset("anscombe")
+
+# Show the results of a linear regression within each dataset
+sns.lmplot(x="x", y="y", col="dataset", hue="dataset", data=df,
+           col_wrap=2, ci=None, palette="muted", height=4,
+           scatter_kws={"s": 50, "alpha": 1})
+
+
+
+
+#Plotting a diagonal correlation matrix (correlo-proto)/heat
+sns.set_theme(style="white")
+
+# Generate a large random dataset
+rs = np.random.RandomState(33)
+d = pd.DataFrame(data=rs.normal(size=(100, 26)),
+                 columns=list(ascii_letters[26:]))
+
+# Compute the correlation matrix
+corr = d.corr()
+
+# Generate a mask for the upper triangle
+mask = np.triu(np.ones_like(corr, dtype=bool))
+
+# Set up the matplotlib figure
+f, ax = plt.subplots(figsize=(11, 9))
+
+# Generate a custom diverging colormap
+cmap = sns.diverging_palette(230, 20, as_cmap=True)
+
+# Draw the heatmap with the mask and correct aspect ratio
+sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
+            square=True, linewidths=.5, cbar_kws={"shrink": .5})
+
+
+  
+
+#Scatterplot with format variations
+sns.set_theme(style="white")
+
+# Load the example mpg dataset
+mpg = sns.load_dataset("mpg")
+
+# Plot miles per gallon against horsepower with other semantics
+sns.relplot(x="horsepower", y="mpg", hue="origin", size="weight",
+            sizes=(40, 400), alpha=.5, palette="muted",
+            height=6, data=mpg)
+
+
+
+
+#Violins (wide form)
+sns.set_theme(style="whitegrid")
+
+# Load the example dataset of brain network correlations
+df = sns.load_dataset("brain_networks", header=[0, 1, 2], index_col=0)
+
+# Pull out a specific subset of networks
+used_networks = [1, 3, 4, 5, 6, 7, 8, 11, 12, 13, 16, 17]
+used_columns = (df.columns.get_level_values("network")
+                          .astype(int)
+                          .isin(used_networks))
+df = df.loc[:, used_columns]
+
+# Compute the correlation matrix and average over networks
+corr_df = df.corr().groupby(level="network").mean()
+corr_df.index = corr_df.index.astype(int)
+corr_df = corr_df.sort_index().T
+
+# Set up the matplotlib figure
+f, ax = plt.subplots(figsize=(11, 6))
+
+# Draw a violinplot with a narrower bandwidth than the default
+sns.violinplot(data=corr_df, palette="Set3", bw=.2, cut=1, linewidth=1)
+
+# Finalize the figure
+ax.set(ylim=(-.7, 1.05))
+sns.despine(left=True, bottom=True)
+
+
+
+
+#Lineplot (wide form)
+sns.set_theme(style="whitegrid")
+
+rs = np.random.RandomState(365)
+values = rs.randn(365, 4).cumsum(axis=0)
+dates = pd.date_range("1 1 2016", periods=365, freq="D")
+data = pd.DataFrame(values, dates, columns=["A", "B", "C", "D"])
+data = data.rolling(7).mean()
+
+sns.lineplot(data=data, palette="tab10", linewidth=2.5)
+
+
+
+
+#Annotated heat
+sns.set_theme()
+
+# Load the example flights dataset and convert to long-form
+flights_long = sns.load_dataset("flights")
+flights = flights_long.pivot("month", "year", "passengers")
+
+# Draw a heatmap with the numeric values in each cell
+f, ax = plt.subplots(figsize=(9, 6))
+sns.heatmap(flights, annot=True, fmt="d", linewidths=.5, ax=ax)
+
+
+
+
+#Linear regression with distributions
+sns.set_theme(style="darkgrid")
+
+tips = sns.load_dataset("tips")
+g = sns.jointplot(x="total_bill", y="tip", data=tips,
+                  kind="reg", truncate=False,
+                  xlim=(0, 60), ylim=(0, 12),
+                  color="m", height=7)
+
+
+
+
+#Bar with color color
+sns.set_theme(style="white", context="talk")
+rs = np.random.RandomState(8)
+
+# Set up the matplotlib figure
+f, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(7, 5), sharex=True)
+
+# Generate some sequential data
+x = np.array(list("ABCDEFGHIJ"))
+y1 = np.arange(1, 11)
+sns.barplot(x=x, y=y1, palette="rocket", ax=ax1)
+ax1.axhline(0, color="k", clip_on=False)
+ax1.set_ylabel("Sequential")
+
+# Center the data to make it diverging
+y2 = y1 - 5.5
+sns.barplot(x=x, y=y2, palette="vlag", ax=ax2)
+ax2.axhline(0, color="k", clip_on=False)
+ax2.set_ylabel("Diverging")
+
+# Randomly reorder the data to make it qualitative
+y3 = rs.choice(y1, len(y1), replace=False)
+sns.barplot(x=x, y=y3, palette="deep", ax=ax3)
+ax3.axhline(0, color="k", clip_on=False)
+ax3.set_ylabel("Qualitative")
+
+# Finalize the plot
+sns.despine(bottom=True)
+plt.setp(f.axes, yticks=[])
+plt.tight_layout(h_pad=2)
+
+
+
+#Kernel density (KDE)
+sns.set_theme(style="whitegrid")
+
+# Load the diamonds dataset
+diamonds = sns.load_dataset("diamonds")
+
+# Plot the distribution of clarity ratings, conditional on carat
+sns.displot(
+    data=diamonds,
+    x="carat", hue="cut",
+    kind="kde", height=6,
+    multiple="fill", clip=(0, None),
+    palette="ch:rot=-.25,hue=1,light=.75",
+)
+
+
+
+#Ridge plot
+sns.set_theme(style="white", rc={"axes.facecolor": (0, 0, 0, 0)})
+
+# Create the data
+rs = np.random.RandomState(1979)
+x = rs.randn(500)
+g = np.tile(list("ABCDEFGHIJ"), 50)
+df = pd.DataFrame(dict(x=x, g=g))
+m = df.g.map(ord)
+df["x"] += m
+
+# Initialize the FacetGrid object
+pal = sns.cubehelix_palette(10, rot=-.25, light=.7)
+g = sns.FacetGrid(df, row="g", hue="g", aspect=15, height=.5, palette=pal)
+
+# Draw the densities in a few steps
+g.map(sns.kdeplot, "x",
+      bw_adjust=.5, clip_on=False,
+      fill=True, alpha=1, linewidth=1.5)
+g.map(sns.kdeplot, "x", clip_on=False, color="w", lw=2, bw_adjust=.5)
+
+# passing color=None to refline() uses the hue mapping
+g.refline(y=0, linewidth=2, linestyle="-", color=None, clip_on=False)
+
+
+# Define and use a simple function to label the plot in axes coordinates
+def label(x, color, label):
+    ax = plt.gca()
+    ax.text(0, .2, label, fontweight="bold", color=color,
+            ha="left", va="center", transform=ax.transAxes)
+
+
+g.map(label, "x")
+
+# Set the subplots to overlap
+g.figure.subplots_adjust(hspace=-.25)
+
+# Remove axes details that don't play well with overlap
+g.set_titles("")
+g.set(yticks=[], ylabel="")
+g.despine(bottom=True, left=True)
+
+
+
+#Facets
+sns.set_theme(style="ticks")
+
+# Create a dataset with many short random walks
+rs = np.random.RandomState(4)
+pos = rs.randint(-1, 2, (20, 5)).cumsum(axis=1)
+pos -= pos[:, 0, np.newaxis]
+step = np.tile(range(5), 20)
+walk = np.repeat(range(20), 5)
+df = pd.DataFrame(np.c_[pos.flat, step, walk],
+                  columns=["position", "step", "walk"])
+
+# Initialize a grid of plots with an Axes for each walk
+grid = sns.FacetGrid(df, col="walk", hue="walk", palette="tab20c",
+                     col_wrap=4, height=1.5)
+
+# Draw a horizontal line to show the starting point
+grid.refline(y=0, linestyle=":")
+
+# Draw a line plot to show the trajectory of each random walk
+grid.map(plt.plot, "step", "position", marker="o")
+
+# Adjust the tick positions and labels
+grid.set(xticks=np.arange(5), yticks=[-3, 3],
+         xlim=(-.5, 4.5), ylim=(-3.5, 3.5))
+
+# Adjust the arrangement of the plots
+grid.fig.tight_layout(w_pad=1)
