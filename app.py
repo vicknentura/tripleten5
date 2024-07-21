@@ -79,7 +79,7 @@ st.pyplot()
 
 st.divider()
 
-st.subheader('Cumulative Platform Sales')
+st.subheader('Cumulative Game Sales by Platform')
 st.caption('Scroll through the table to view cumulative sales since the platform was released')
 
 #Total Platform Sales
@@ -97,9 +97,6 @@ else:
     df_filtered = total_platform_sales
 
 st.dataframe(df_filtered)  # display the filtered dataframe
-
-
-st.divider()
 
 
 # Sort the data from highest to lowest
@@ -129,6 +126,7 @@ st.pyplot()
 
 st.divider()
 
+st.subheader('Game Sales by Platform and Release Dates')
 
 # Find platforms that used to be popular but now have zero sales
 popular_platforms = games[(games['na_sales'] > 0) | (games['eu_sales'] > 0) | (games['jp_sales'] > 0) | (games['other_sales'] > 0)]['platform'].unique()
@@ -139,6 +137,10 @@ former_popular_platforms = [platform for platform in popular_platforms if platfo
 games['total_sales'] = games[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum(axis=1)
 
 
+st.divider()
+
+st.subheader('Cumulative Game Sales by Platform')
+st.caption('Platforms released 1995 to 2016')
 
 # fill NaN values with 0 (or any other value that makes sense for your data)
 games['year_of_release'].fillna(0, inplace=True)
@@ -166,6 +168,9 @@ st.pyplot()
 
 st.divider()
 
+st.subheader('Statistical Analysis of Game Sales by Platform')
+st.caption('Platforms released 1995 to 2016')
+
 
 games_slice = games[games['year_of_release'] >= 1995]
 
@@ -181,8 +186,6 @@ games_by_year['slope'] = games_by_year.apply(lambda x: linregress(range(len(x)),
 
 st.write(games_by_year)
 
-
-st.divider()
 
 
 #Statistical
@@ -212,7 +215,8 @@ st.pyplot()
 
 st.divider()
 
-
+st.subheader('Regional Game Sales by Platform')
+st.caption('Platforms released 1995 to 2016')
 
 # Group the data by platform and calculate the total sales for each region
 platform_sales = games.groupby('platform')[['na_sales', 'eu_sales', 'jp_sales', 'other_sales']].sum().reset_index()
@@ -238,6 +242,8 @@ st.pyplot()
 
 st.divider()
 
+st.subheader('XBox 360 Game Sales and Reviews')
+st.caption('Critic and User Reviews')
 
 x360_games = games[games['platform'] == 'X360']
 
@@ -265,9 +271,9 @@ sns.scatterplot(x='user_score', y='total_sales', data=scores, color='#cf850c', l
 plt.legend()
 
 # Add axis labels and a title
-plt.xlabel('Score')
+plt.xlabel('Review Score')
 plt.ylabel('Sales (millions)')
-plt.title('X360 Sales vs. Reviews')
+plt.title('X360 Game Sales vs. Reviews')
 
 # Set the x-axis limits to the minimum and maximum values in the data
 plt.xlim(np.nanmin([scores['critic_score'].min(), scores['user_score'].min()]),
@@ -297,7 +303,7 @@ st.write('The r-squared value for Critic Reviews to Sales is : ', round(critic_r
 
 st.divider()
 
-
+st.subheader('Statistical Insights I')
 
 # Select the columns of interest
 cols = ['na_sales', 'eu_sales', 'jp_sales', 'other_sales', 'total_sales', 'user_score', 'critic_score']
@@ -326,6 +332,9 @@ st.pyplot()
 
 st.divider()
 
+st.subheader('Game Sales by Release Platform')
+st.caption('Critic and User Reviews')
+
 
 # Group the data by game name and platform, and sum the total sales
 grouped_df = games.groupby(['name', 'platform'])['total_sales'].sum().reset_index()
@@ -339,7 +348,8 @@ st.write(pivot_df)
 
 st.divider()
 
-
+st.subheader('Game Releases by Genre')
+st.caption('Global Sales')
 
 genre_counts = games['genre'].value_counts()
 
@@ -358,10 +368,6 @@ for i, v in enumerate(genre_counts):
 st.pyplot()
 
 
-st.divider()
-
-
-
 # Group by genre and calculate sum of total sales
 genre_sales = games.groupby('genre')['total_sales'].sum().reset_index()
 
@@ -373,7 +379,8 @@ st.write(genre_sales)
 
 st.divider()
 
-
+st.subheader('Game Sales in the Top Genres')
+st.caption('Top 10 Genres')
 
 # Pivot the data to get total sales by genre and year
 genre_year_sales = games.pivot_table(index=['genre', 'year_of_release'], values='total_sales', aggfunc='sum').reset_index()
@@ -399,9 +406,6 @@ st.pyplot()
 
 
 st.divider()
-
-
-
 
 # assume 'games' is a Pandas DataFrame with columns 'na_sales', 'eu_sales', 'jp_sales', 'other_sales'
 
